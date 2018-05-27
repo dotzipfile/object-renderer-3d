@@ -9,7 +9,7 @@ import com.dotzipfile.renderer3d.models.Vector3;
 import com.dotzipfile.renderer3d.utilities.Matrix3;
 
 public class RenderEngine {
-	
+
 	public BufferedImage render(double headingSliderVal, double pitchSliderVal, int imgWidth, int imgHeight) {
 		Tetrahedron tet = new Tetrahedron();
 		List<Triangle> tris = tet.getTriangles();
@@ -24,12 +24,12 @@ public class RenderEngine {
 
 			img = renderPixels(t, transform, img, zBuffer, imgWidth, imgHeight);
 		}
-		
+
 		return img;
 	}
-	
+
 	public Matrix3 transformations(double headingSliderVal, double pitchSliderVal) {
-		
+
 		double heading = Math.toRadians(headingSliderVal);
 
 		Matrix3 headingTransform = new Matrix3(new double[] { 
@@ -54,21 +54,22 @@ public class RenderEngine {
 		});
 
 		Matrix3 transform = headingTransform.multiply(pitchTransform);
-		
+
 		return transform;
 	}
-	
+
 	public double[] initialiseZBuffer(BufferedImage img) {
+
 		double[] zBuffer = new double[img.getWidth() * img.getHeight()];
-		
+
 		// initialize array with extremely far away depths
 		for(int q = 0; q < zBuffer.length; q++) {
 			zBuffer[q] = Double.NEGATIVE_INFINITY;
 		}
-		
+
 		return zBuffer;
 	}
-	
+
 	public BufferedImage renderPixels(Triangle t, Matrix3 transform, BufferedImage img, double[] zBuffer, int width, int height) {
 		Vector3 v1 = transform.transform(t.v1);
 		Vector3 v2 = transform.transform(t.v2);
@@ -82,6 +83,20 @@ public class RenderEngine {
 		v2.y += height / 2;
 		v3.x += width / 2;
 		v3.y += height / 2;
+
+		Vector3 ab = new Vector3(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
+		Vector3 ac = new Vector3(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
+		Vector3 norm = new Vector3(
+			ab.y * ac.z - ab.z * ac.y,
+			ab.z * ac.x - ab.x * ac.z,
+			ab.x * ac.y - ab.y * ac.x
+		);
+
+		double normalLength = Math.sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
+
+		norm.x /= normalLength;
+		norm.y /= normalLength;
+		norm.z /= normalLength;
 
 		// compute rectangular bounds for triangle
 		int minX = (int) Math.max(0, Math.ceil(Math.min(v1.x, Math.min(v2.x, v3.x))));
@@ -111,7 +126,7 @@ public class RenderEngine {
 				}
 			}
 		}
-		
+
 		return img;
 	}
 }

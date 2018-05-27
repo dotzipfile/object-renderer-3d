@@ -25,7 +25,7 @@ public class UI extends JFrame{
 		CustomJPanel renderPanel = new CustomJPanel(headingSlider.getValue(), pitchSlider.getValue());
 
 		pane.add(renderPanel, BorderLayout.CENTER);
-		
+
 		headingSlider.addChangeListener(e -> (renderPanel).customRepaint((double)headingSlider.getValue(), (double)pitchSlider.getValue()));
 		pitchSlider.addChangeListener(e -> (renderPanel).customRepaint((double)headingSlider.getValue(), (double)pitchSlider.getValue()));
 
