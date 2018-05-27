@@ -1,12 +1,32 @@
 package com.dotzipfile.renderer3d.engine;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
+import com.dotzipfile.renderer3d.models.Tetrahedron;
 import com.dotzipfile.renderer3d.models.Triangle;
 import com.dotzipfile.renderer3d.models.Vector3;
 import com.dotzipfile.renderer3d.utilities.Matrix3;
 
 public class RenderEngine {
+	
+	public BufferedImage render(double headingSliderVal, double pitchSliderVal, int imgWidth, int imgHeight) {
+		Tetrahedron tet = new Tetrahedron();
+		List<Triangle> tris = tet.getTriangles();
+
+		Matrix3 transform = transformations(headingSliderVal, pitchSliderVal);
+
+		BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
+
+		double[] zBuffer = initialiseZBuffer(img);
+
+		for(Triangle t : tris) {
+
+			img = renderPixels(t, transform, img, zBuffer, imgWidth, imgHeight);
+		}
+		
+		return img;
+	}
 	
 	public Matrix3 transformations(double headingSliderVal, double pitchSliderVal) {
 		

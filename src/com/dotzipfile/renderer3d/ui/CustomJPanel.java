@@ -4,14 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 import javax.swing.JPanel;
 
 import com.dotzipfile.renderer3d.engine.RenderEngine;
-import com.dotzipfile.renderer3d.models.Tetrahedron;
-import com.dotzipfile.renderer3d.models.Triangle;
-import com.dotzipfile.renderer3d.utilities.Matrix3;
 
 public class CustomJPanel extends JPanel {
 
@@ -32,21 +28,9 @@ public class CustomJPanel extends JPanel {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 
-		Tetrahedron tet = new Tetrahedron();
-		List<Triangle> tris = tet.getTriangles();
-		
 		RenderEngine engine = new RenderEngine();
-
-		Matrix3 transform = engine.transformations(headingSliderVal, pitchSliderVal);
-
-		BufferedImage img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-		double[] zBuffer = engine.initialiseZBuffer(img);
-
-		for(Triangle t : tris) {
-
-			img = engine.renderPixels(t, transform, img, zBuffer, getWidth(), getHeight());
-		}
+		
+		BufferedImage img = engine.render(headingSliderVal, pitchSliderVal, getWidth(), getHeight());
 
 		g2.drawImage(img, 0, 0, null);
 	}
