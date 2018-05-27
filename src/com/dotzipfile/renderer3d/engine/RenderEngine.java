@@ -1,5 +1,6 @@
 package com.dotzipfile.renderer3d.engine;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -98,6 +99,8 @@ public class RenderEngine {
 		norm.y /= normalLength;
 		norm.z /= normalLength;
 
+		double angleCos = Math.abs(norm.z);
+
 		// compute rectangular bounds for triangle
 		int minX = (int) Math.max(0, Math.ceil(Math.min(v1.x, Math.min(v2.x, v3.x))));
 		int maxX = (int) Math.min(img.getWidth() - 1, Math.floor(Math.max(v1.x, Math.max(v2.x, v3.x))));
@@ -120,7 +123,7 @@ public class RenderEngine {
 					int zIndex = y * img.getWidth() + x;
 
 					if(zBuffer[zIndex] < depth) {
-						img.setRGB(x, y, t.color.getRGB());
+						img.setRGB(x, y, getShade(t.color, angleCos).getRGB());
 						zBuffer[zIndex] = depth;
 					}
 				}
@@ -128,5 +131,18 @@ public class RenderEngine {
 		}
 
 		return img;
+	}
+
+	public Color getShade(Color color, double shade) {
+
+		double redLinear = Math.pow(color.getRed(), 2.4) * shade;
+		double greenLinear = Math.pow(color.getGreen(), 2.4) * shade;
+		double blueLinear = Math.pow(color.getBlue(), 2.4) * shade;
+
+		int red = (int) Math.pow(redLinear, 1/2.4);
+		int green = (int) Math.pow(greenLinear, 1/2.4);
+		int blue = (int) Math.pow(blueLinear, 1/2.4);
+
+		return new Color(red, green, blue);
 	}
 }
