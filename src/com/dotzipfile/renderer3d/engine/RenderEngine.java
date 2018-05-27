@@ -2,6 +2,7 @@ package com.dotzipfile.renderer3d.engine;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.dotzipfile.renderer3d.models.Tetrahedron;
@@ -12,6 +13,7 @@ import com.dotzipfile.renderer3d.utilities.Matrix3;
 public class RenderEngine {
 
 	public BufferedImage render(double headingSliderVal, double pitchSliderVal, int imgWidth, int imgHeight) {
+
 		Tetrahedron tet = new Tetrahedron();
 		List<Triangle> tris = tet.getTriangles();
 
@@ -72,6 +74,7 @@ public class RenderEngine {
 	}
 
 	public BufferedImage renderPixels(Triangle t, Matrix3 transform, BufferedImage img, double[] zBuffer, int width, int height) {
+
 		Vector3 v1 = transform.transform(t.v1);
 		Vector3 v2 = transform.transform(t.v2);
 		Vector3 v3 = transform.transform(t.v3);
@@ -123,6 +126,7 @@ public class RenderEngine {
 					int zIndex = y * img.getWidth() + x;
 
 					if(zBuffer[zIndex] < depth) {
+
 						img.setRGB(x, y, getShade(t.color, angleCos).getRGB());
 						zBuffer[zIndex] = depth;
 					}
@@ -139,10 +143,39 @@ public class RenderEngine {
 		double greenLinear = Math.pow(color.getGreen(), 2.4) * shade;
 		double blueLinear = Math.pow(color.getBlue(), 2.4) * shade;
 
-		int red = (int) Math.pow(redLinear, 1/2.4);
-		int green = (int) Math.pow(greenLinear, 1/2.4);
-		int blue = (int) Math.pow(blueLinear, 1/2.4);
+		int red = (int) Math.pow(redLinear, 1 / 2.4);
+		int green = (int) Math.pow(greenLinear, 1 / 2.4);
+		int blue = (int) Math.pow(blueLinear, 1 / 2.4);
 
 		return new Color(red, green, blue);
+	}
+
+	public List<Triangle> inflate(List<Triangle> tris) {
+
+		List<Triangle> result = new ArrayList<Triangle>();
+
+		for (Triangle t : tris) {
+
+			Vector3 m1 = new Vector3((t.v1.x + t.v2.x) / 2, (t.v1.y + t.v2.y) / 2, (t.v1.z + t.v2.z) / 2);
+			Vector3 m2 = new Vector3((t.v2.x + t.v3.x) / 2, (t.v2.y + t.v3.y) / 2, (t.v2.z + t.v3.z) / 2);
+			Vector3 m3 = new Vector3((t.v1.x + t.v3.x) / 2, (t.v1.y + t.v3.y) / 2, (t.v1.z + t.v3.z) / 2);
+			result.add(new Triangle(t.v1, m1, m3, t.color));
+			result.add(new Triangle(t.v2, m1, m2, t.color));
+			result.add(new Triangle(t.v3, m2, m3, t.color));
+			result.add(new Triangle(m1, m2, m3, t.color));
+		}
+
+		for (Triangle t : result) {
+
+			for (Vector3 v : new Vector3[] { t.v1, t.v2, t.v3 }) {
+
+				double l = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z) / Math.sqrt(30000);
+				v.x /= l;
+				v.y /= l;
+				v.z /= l;
+			}
+		}
+
+		return result;
 	}
 }
