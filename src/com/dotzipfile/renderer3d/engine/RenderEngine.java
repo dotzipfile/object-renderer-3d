@@ -17,6 +17,11 @@ public class RenderEngine {
 		Tetrahedron tet = new Tetrahedron();
 		List<Triangle> tris = tet.getTriangles();
 
+		for(int i = 0; i < 4; i ++) {
+
+			tris = inflate(tris);
+		}
+
 		Matrix3 transform = transformations(headingSliderVal, pitchSliderVal);
 
 		BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
