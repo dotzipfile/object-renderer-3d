@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tetrahedron {
+	
+	private List<Triangle> tris;
 
 	public Tetrahedron() {
-		List<Triangle> tris = new ArrayList<Triangle>();
+		tris = new ArrayList<Triangle>();
 		tris.add(new Triangle(new Vector3(100, 100, 100),
 			new Vector3(-100, -100, 100),
 			new Vector3(-100, 100, -100),
@@ -24,5 +26,9 @@ public class Tetrahedron {
 			new Vector3(100, -100, -100),
 			new Vector3(-100, -100, 100),
 			Color.BLUE));
+	}
+	
+	public List<Triangle> getTetrahedron() {
+		return tris;
 	}
 }
