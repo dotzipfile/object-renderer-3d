@@ -6,11 +6,11 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 
+import com.dotzipfile.renderer3d.models.Tetrahedron;
 import com.dotzipfile.renderer3d.models.Triangle;
 import com.dotzipfile.renderer3d.models.Vector3;
 import com.dotzipfile.renderer3d.utilities.Matrix3;
@@ -43,23 +43,8 @@ public class UI extends JFrame{
 				g2.setColor(Color.BLACK);
 				g2.fillRect(0, 0, getWidth(), getHeight());
 
-				List<Triangle> tris = new ArrayList<Triangle>();
-				tris.add(new Triangle(new Vector3(100, 100, 100), 
-					new Vector3(-100, -100, 100), 
-					new Vector3(-100, 100, -100), 
-					Color.WHITE));
-				tris.add(new Triangle(new Vector3(100, 100, 100), 
-					new Vector3(-100, -100, 100), 
-					new Vector3(100, -100, -100), 
-					Color.RED));
-				tris.add(new Triangle(new Vector3(-100, 100, -100), 
-					new Vector3(100, -100, -100), 
-					new Vector3(100, 100, 100), 
-					Color.GREEN));
-				tris.add(new Triangle(new Vector3(-100, 100, -100), 
-					new Vector3(100, -100, -100), 
-					new Vector3(-100, -100, 100), 
-					Color.BLUE));
+				Tetrahedron tet = new Tetrahedron();
+				List<Triangle> tris = tet.getTetParts();
 
 				// Render
 				double heading = Math.toRadians(headingSlider.getValue());

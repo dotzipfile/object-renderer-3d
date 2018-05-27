@@ -28,7 +28,7 @@ public class Tetrahedron {
 			Color.BLUE));
 	}
 	
-	public List<Triangle> getTetrahedron() {
+	public List<Triangle> getTetParts() {
 		return tris;
 	}
 }
